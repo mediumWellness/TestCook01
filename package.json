@@ -1,0 +1,14 @@
+{
+  "name": "scribd-batch-download-tool",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Batch downloader helper for Scribd URLs using an authenticated browser session.",
+  "scripts": {
+    "download:scribd": "node scripts/scribd-batch-download.mjs --input urls.txt",
+    "check": "node --check scripts/scribd-batch-download.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.54.2"
+  }
+}
