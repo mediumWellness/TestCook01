@@ -16,7 +16,7 @@ export default function MrTestyPage() {
   const [config, setConfig] = useState(defaultConfig);
 
   const plan = useMemo(() => {
-    const sessionHours = Number(config.sessionHours) > 0 ? Number(config.sessionHours) : 1;
+    const sessionHours = Math.max(1, Number(config.sessionHours) || 0);
 
     return `You are ${config.personaName}, a browser persona agent for ${config.targetExperience}.
 
@@ -59,7 +59,7 @@ Output format:
       </div>
 
       <div className="persona-layout">
-        <form className="recipe-form" onSubmit={(event) => event.preventDefault()}>
+        <form className="persona-form recipe-form" onSubmit={(event) => event.preventDefault()}>
           <label>
             Persona name
             <input name="personaName" value={config.personaName} onChange={handleChange} />
