@@ -12,10 +12,33 @@
   margin-bottom: 1.5rem;
 }
 
+.app-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .app-title {
   font-size: 1.5rem;
   font-weight: 700;
   text-decoration: none;
+  color: #222;
+}
+
+.app-nav {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.app-nav-link {
+  color: #555;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.app-nav-link.is-active {
   color: #222;
 }
 
@@ -131,4 +154,60 @@ button {
 .form-error {
   color: #c93a3a;
   font-weight: 600;
+}
+
+.persona-page-header {
+  align-items: flex-start;
+}
+
+.persona-intro {
+  color: #555;
+  max-width: 42rem;
+}
+
+.persona-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.persona-plan {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fffaf1;
+}
+
+.persona-plan-header {
+  margin-bottom: 0.75rem;
+}
+
+.persona-plan-header h2 {
+  margin: 0 0 0.35rem;
+}
+
+.persona-plan-header p {
+  color: #555;
+}
+
+.persona-plan-output {
+  width: 100%;
+  min-height: 26rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  background: #fff;
+}
+
+@media (max-width: 640px) {
+  .app-header-content,
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
