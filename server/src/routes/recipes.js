@@ -2,6 +2,13 @@ const express = require('express');
 const prisma = require('../prismaClient');
 
 const router = express.Router();
+const RECIPE_LIST_SELECT = {
+  id: true,
+  title: true,
+  description: true,
+  servings: true,
+  cookTimeMinutes: true,
+};
 
 function toRecipeResponse(recipe) {
   return {
@@ -46,8 +53,11 @@ function validateRecipeInput(body, { partial = false } = {}) {
 // GET /api/recipes
 router.get('/', async (req, res, next) => {
   try {
-    const recipes = await prisma.recipe.findMany({ orderBy: { createdAt: 'desc' } });
-    res.json(recipes.map(toRecipeResponse));
+    const recipes = await prisma.recipe.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: RECIPE_LIST_SELECT,
+    });
+    res.json(recipes);
   } catch (err) {
     next(err);
   }
