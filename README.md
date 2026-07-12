@@ -48,14 +48,16 @@ The Vite dev server proxies `/api` requests to `http://localhost:4000`, so no CO
 Open http://localhost:5173 in your browser. You can create, view, edit, and delete recipes, or open the **Mr Testy** page to generate a browser testing persona brief for games and roleplay chatbots.
 
 ## API reference (server)
-| Method | Path                | Description          |
-|--------|---------------------|-----------------------|
-| GET    | `/api/health`        | Health check          |
-| GET    | `/api/recipes`       | List all recipes      |
-| GET    | `/api/recipes/:id`   | Get a single recipe   |
-| POST   | `/api/recipes`       | Create a recipe       |
-| PUT    | `/api/recipes/:id`   | Update a recipe       |
-| DELETE | `/api/recipes/:id`   | Delete a recipe       |
+| Method | Path                      | Description                          |
+|--------|---------------------------|--------------------------------------|
+| GET    | `/api/health`              | Health check                         |
+| GET    | `/api/recipes`             | List all recipes                     |
+| GET    | `/api/recipes/:id`         | Get a single recipe                  |
+| POST   | `/api/recipes`             | Create a recipe                      |
+| PUT    | `/api/recipes/:id`         | Update a recipe                      |
+| DELETE | `/api/recipes/:id`         | Delete a recipe                      |
+| GET    | `/api/models/test/venice`  | Test Venice.ai connection            |
+| GET    | `/api/models/test/ollama`  | Test Ollama connection               |
 
 Recipe payload shape:
 ```json
@@ -73,3 +75,5 @@ Recipe payload shape:
 - This initial setup covers basic recipe CRUD only — no user accounts/auth yet.
 - The client also includes a **Mr Testy** route for generating a reusable browser persona prompt focused on long-running game and chatbot playtesting.
 - Prisma schema lives at `server/prisma/schema.prisma`. After changing it, run `npm run prisma:migrate` inside `server/`.
+- The `/api/models/test/venice` endpoint requires `VENICE_API_KEY` set in `server/.env`. The `/api/models/test/ollama` endpoint requires a running [Ollama](https://ollama.com) instance (default `http://localhost:11434`).
+- Run server tests with `cd server && npm test`.
