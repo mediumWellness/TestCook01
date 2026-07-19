@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const recipesRouter = require('./routes/recipes');
+const modelsRouter = require('./routes/models');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -15,6 +16,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/recipes', recipesRouter);
+app.use('/api/models', modelsRouter);
 
 // 404 handler
 app.use((req, res) => {
