@@ -3,6 +3,10 @@ const prisma = require('../prismaClient');
 
 const router = express.Router();
 
+function isRecordNotFoundError(err) {
+  return err && err.code === 'P2025';
+}
+
 function toRecipeResponse(recipe) {
   return {
     ...recipe,
@@ -114,25 +118,26 @@ router.put('/:id', async (req, res, next) => {
     if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
-
-    const existing = await prisma.recipe.findUnique({ where: { id } });
-    if (!existing) {
-      return res.status(404).json({ error: 'Recipe not found' });
-    }
-
     const { title, description, ingredients, instructions, servings, cookTimeMinutes } = req.body;
-    const recipe = await prisma.recipe.update({
-      where: { id },
-      data: {
-        ...(title !== undefined && { title: title.trim() }),
-        ...(description !== undefined && { description }),
-        ...(ingredients !== undefined && { ingredients: ingredients.join('\n') }),
-        ...(instructions !== undefined && { instructions: instructions.trim() }),
-        ...(servings !== undefined && { servings }),
-        ...(cookTimeMinutes !== undefined && { cookTimeMinutes }),
-      },
-    });
-    res.json(toRecipeResponse(recipe));
+    try {
+      const recipe = await prisma.recipe.update({
+        where: { id },
+        data: {
+          ...(title !== undefined && { title: title.trim() }),
+          ...(description !== undefined && { description }),
+          ...(ingredients !== undefined && { ingredients: ingredients.join('\n') }),
+          ...(instructions !== undefined && { instructions: instructions.trim() }),
+          ...(servings !== undefined && { servings }),
+          ...(cookTimeMinutes !== undefined && { cookTimeMinutes }),
+        },
+      });
+      res.json(toRecipeResponse(recipe));
+    } catch (err) {
+      if (isRecordNotFoundError(err)) {
+        return res.status(404).json({ error: 'Recipe not found' });
+      }
+      throw err;
+    }
   } catch (err) {
     next(err);
   }
@@ -145,12 +150,15 @@ router.delete('/:id', async (req, res, next) => {
     if (!Number.isInteger(id)) {
       return res.status(400).json({ error: 'Invalid recipe id' });
     }
-    const existing = await prisma.recipe.findUnique({ where: { id } });
-    if (!existing) {
-      return res.status(404).json({ error: 'Recipe not found' });
+    try {
+      await prisma.recipe.delete({ where: { id } });
+      return res.status(204).send();
+    } catch (err) {
+      if (isRecordNotFoundError(err)) {
+        return res.status(404).json({ error: 'Recipe not found' });
+      }
+      throw err;
     }
-    await prisma.recipe.delete({ where: { id } });
-    res.status(204).send();
   } catch (err) {
     next(err);
   }
