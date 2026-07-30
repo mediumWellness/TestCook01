@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const recipesRouter = require('./routes/recipes');
 const modelsRouter = require('./routes/models');
 
@@ -9,6 +10,7 @@ const PORT = process.env.PORT || 4000;
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
 
 app.use(cors({ origin: CLIENT_ORIGIN }));
+app.use(compression());
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
