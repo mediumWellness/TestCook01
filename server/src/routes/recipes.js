@@ -12,13 +12,13 @@ function toRecipeResponse(recipe) {
 
 function validateStringArray(value, fieldName, errors) {
   if (!Array.isArray(value) || value.length === 0) {
-    errors.push(fieldName + ' must be a non-empty array of strings');
+    errors.push(fieldName + ' is required and must be a non-empty array of strings');
     return;
   }
 
   const invalidEntry = value.some((entry) => typeof entry !== 'string' || entry.trim().length === 0);
   if (invalidEntry) {
-    errors.push(fieldName + ' must contain only non-empty strings');
+    errors.push(fieldName + ' is required and must be a non-empty array of strings');
   }
 }
 

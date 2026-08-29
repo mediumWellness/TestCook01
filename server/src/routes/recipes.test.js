@@ -65,7 +65,7 @@ describe('recipe write routes', () => {
     });
 
     expect(res.status).toBe(400);
-    expect(res.body.errors).toContain('ingredients must contain only non-empty strings');
+    expect(res.body.errors).toContain('ingredients is required and must be a non-empty array of strings');
     expect(mockPrisma.recipe.update).not.toHaveBeenCalled();
   });
 
