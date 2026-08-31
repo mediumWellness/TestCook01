@@ -58,6 +58,7 @@ router.get('/', async (req, res, next) => {
         description: true,
         servings: true,
         cookTimeMinutes: true,
+        ingredients: true,
       },
     });
     res.json(recipes);
