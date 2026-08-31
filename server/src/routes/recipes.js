@@ -61,7 +61,7 @@ router.get('/', async (req, res, next) => {
         ingredients: true,
       },
     });
-    res.json(recipes);
+    res.json(recipes.map(toRecipeResponse));
   } catch (err) {
     next(err);
   }
