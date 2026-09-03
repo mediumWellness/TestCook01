@@ -16,7 +16,7 @@ function validateStringArray(value, fieldName, errors) {
     return;
   }
 
-  const invalidEntry = value.some((entry) => typeof entry !== 'string' || entry.trim().length === 0);
+  const invalidEntry = value.some((entry) => typeof entry !== 'string' || entry.trim().length === 0 || /[\n\r]/.test(entry));
   if (invalidEntry) {
     errors.push(fieldName + ' is required and must be a non-empty array of strings');
   }

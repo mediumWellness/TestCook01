@@ -69,6 +69,17 @@ describe('recipe write routes', () => {
     expect(mockPrisma.recipe.update).not.toHaveBeenCalled();
   });
 
+  it('rejects ingredient arrays that contain entries with newlines', async () => {
+    const app = buildApp();
+    const res = await request(app).put('/api/recipes/42').send({
+      ingredients: ['Stock', 'Bad\nNewline'],
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.errors).toContain('ingredients is required and must be a non-empty array of strings');
+    expect(mockPrisma.recipe.update).not.toHaveBeenCalled();
+  });
+
   it('returns 404 when update targets a missing recipe', async () => {
     mockPrisma.recipe.update.mockRejectedValue({ code: 'P2025' });
 
