@@ -22,7 +22,11 @@ describe('GET /api/models/test/venice', () => {
 
   afterEach(() => {
     global.fetch = originalFetch;
-    process.env.VENICE_API_KEY = originalApiKey;
+    if (originalApiKey === undefined) {
+      delete process.env.VENICE_API_KEY;
+    } else {
+      process.env.VENICE_API_KEY = originalApiKey;
+    }
   });
 
   it('returns 503 when VENICE_API_KEY is not set', async () => {

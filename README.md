@@ -75,5 +75,6 @@ Recipe payload shape:
 - This initial setup covers basic recipe CRUD only — no user accounts/auth yet.
 - The client also includes a **Mr Testy** route for generating a reusable browser persona prompt focused on long-running game and chatbot playtesting.
 - Prisma schema lives at `server/prisma/schema.prisma`. After changing it, run `npm run prisma:migrate` inside `server/`.
+- Recipe ingredient arrays are validated to reject: blank/empty entries, non-string elements, and entries containing newline or carriage-return characters. This prevents data corruption and ensures data integrity on retrieval.
 - The `/api/models/test/venice` endpoint requires `VENICE_API_KEY` set in `server/.env`. The `/api/models/test/ollama` endpoint requires a running [Ollama](https://ollama.com) instance (default `http://localhost:11434`).
 - Run server tests with `cd server && npm test`.

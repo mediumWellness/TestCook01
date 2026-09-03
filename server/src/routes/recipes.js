@@ -10,6 +10,18 @@ function toRecipeResponse(recipe) {
   };
 }
 
+function validateStringArray(value, fieldName, errors) {
+  if (!Array.isArray(value) || value.length === 0) {
+    errors.push(fieldName + ' is required and must be a non-empty array of strings');
+    return;
+  }
+
+  const invalidEntry = value.some((entry) => typeof entry !== 'string' || entry.trim().length === 0 || /[\n\r]/.test(entry));
+  if (invalidEntry) {
+    errors.push(fieldName + ' is required and must be a non-empty array of strings');
+  }
+}
+
 function validateRecipeInput(body, { partial = false } = {}) {
   const errors = [];
   const { title, ingredients, instructions } = body;
@@ -20,9 +32,7 @@ function validateRecipeInput(body, { partial = false } = {}) {
     }
   }
   if (!partial || ingredients !== undefined) {
-    if (!Array.isArray(ingredients) || ingredients.length === 0) {
-      errors.push('ingredients is required and must be a non-empty array of strings');
-    }
+    validateStringArray(ingredients, 'ingredients', errors);
   }
   if (!partial || instructions !== undefined) {
     if (typeof instructions !== 'string' || instructions.trim().length === 0) {
