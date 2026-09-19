@@ -1,6 +1,11 @@
 # TestCook01 🍳
 
+![TestCook01 recipe dashboard with pancake and soup cards, New recipe action, and Mr Testy navigation](docs/assets/testcook01-showcase.png)
+
 A simple recipe management web app with a built-in browser persona brief generator for long-form game and chatbot testing.
+
+**License:** [MIT](LICENSE)
+
 
 ## Stack
 - **Client:** React 19 + Vite, react-router-dom
@@ -31,7 +36,8 @@ This starts Postgres on `localhost:5432` with database `testcook01`, user/passwo
 cd server
 cp .env.example .env
 npm install
-npm run prisma:migrate   # creates the Recipe table
+npm run prisma:generate  # required when npm skips package install scripts
+npm run prisma:migrate   # applies committed Prisma migrations (creates the Recipe table)
 npm run dev              # starts API on http://localhost:4000
 ```
 
@@ -46,6 +52,34 @@ The Vite dev server proxies `/api` requests to `http://localhost:4000`, so no CO
 
 ### 4. Use the app
 Open http://localhost:5173 in your browser. You can create, view, edit, and delete recipes, or open the **Mr Testy** page to generate a browser testing persona brief for games and roleplay chatbots.
+
+## Usage
+
+Smallest successful workflow after the server is running:
+
+```bash
+curl -s http://localhost:4000/api/health
+```
+
+Expected output:
+
+```json
+{"status":"ok"}
+```
+
+Create a recipe, then list it (run from the repository root so the example payload path resolves):
+
+```bash
+curl -s -X POST http://localhost:4000/api/recipes \
+  -H "Content-Type: application/json" \
+  --data-binary @docs/examples/pancake-recipe.json
+
+curl -s http://localhost:4000/api/recipes
+```
+
+Expected create response (HTTP 201): a JSON object with a numeric `id`, the title `Pancakes`, and `ingredients` as a string array. The list endpoint then returns that recipe (plus any others) ordered newest first.
+
+In the browser at http://localhost:5173 you should see the same recipe on the **Recipes** page. Use **+ New recipe** to add more, or open **Mr Testy** to generate a browser testing persona brief.
 
 ## API reference (server)
 | Method | Path                      | Description                          |
@@ -74,7 +108,7 @@ Recipe payload shape:
 ## Notes
 - This initial setup covers basic recipe CRUD only — no user accounts/auth yet.
 - The client also includes a **Mr Testy** route for generating a reusable browser persona prompt focused on long-running game and chatbot playtesting.
-- Prisma schema lives at `server/prisma/schema.prisma`. After changing it, run `npm run prisma:migrate` inside `server/`.
+- Prisma schema lives at `server/prisma/schema.prisma`. After changing it, run `npm run prisma:migrate:dev` inside `server/` to create a development migration, then commit the new files under `server/prisma/migrations/`.
 - Recipe ingredient arrays are validated to reject: blank/empty entries, non-string elements, and entries containing newline or carriage-return characters. This prevents data corruption and ensures data integrity on retrieval.
 - The `/api/models/test/venice` endpoint requires `VENICE_API_KEY` set in `server/.env`. The `/api/models/test/ollama` endpoint requires a running [Ollama](https://ollama.com) instance (default `http://localhost:11434`).
 - Run server tests with `cd server && npm test`.

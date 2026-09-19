@@ -2,6 +2,7 @@
   "name": "testcook01-server",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "description": "TestCook01 recipe API server",
   "main": "src/index.js",
   "type": "commonjs",
@@ -10,7 +11,8 @@
     "start": "node src/index.js",
     "test": "jest",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:migrate:dev": "prisma migrate dev",
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
