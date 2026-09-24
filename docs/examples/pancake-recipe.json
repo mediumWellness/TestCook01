@@ -1,0 +1,8 @@
+{
+  "title": "Pancakes",
+  "description": "Fluffy weekend pancakes",
+  "ingredients": ["2 cups flour", "2 eggs", "1.5 cups milk"],
+  "instructions": "Mix ingredients. Cook on a hot griddle until golden.",
+  "servings": 4,
+  "cookTimeMinutes": 20
+}
