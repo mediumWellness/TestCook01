@@ -1,10 +1,12 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
-import RecipeListPage from './pages/RecipeListPage';
-import RecipeDetailPage from './pages/RecipeDetailPage';
-import NewRecipePage from './pages/NewRecipePage';
-import EditRecipePage from './pages/EditRecipePage';
-import MrTestyPage from './pages/MrTestyPage';
 import './App.css';
+
+const RecipeListPage = lazy(() => import('./pages/RecipeListPage'));
+const RecipeDetailPage = lazy(() => import('./pages/RecipeDetailPage'));
+const NewRecipePage = lazy(() => import('./pages/NewRecipePage'));
+const EditRecipePage = lazy(() => import('./pages/EditRecipePage'));
+const MrTestyPage = lazy(() => import('./pages/MrTestyPage'));
 
 function App() {
   return (
@@ -32,13 +34,15 @@ function App() {
         </div>
       </header>
       <main className="app-main">
-        <Routes>
-          <Route path="/" element={<RecipeListPage />} />
-          <Route path="/mr-testy" element={<MrTestyPage />} />
-          <Route path="/recipes/new" element={<NewRecipePage />} />
-          <Route path="/recipes/:id" element={<RecipeDetailPage />} />
-          <Route path="/recipes/:id/edit" element={<EditRecipePage />} />
-        </Routes>
+        <Suspense fallback={<p>Loading page…</p>}>
+          <Routes>
+            <Route path="/" element={<RecipeListPage />} />
+            <Route path="/mr-testy" element={<MrTestyPage />} />
+            <Route path="/recipes/new" element={<NewRecipePage />} />
+            <Route path="/recipes/:id" element={<RecipeDetailPage />} />
+            <Route path="/recipes/:id/edit" element={<EditRecipePage />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   );
