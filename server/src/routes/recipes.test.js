@@ -3,6 +3,7 @@ const express = require('express');
 
 const mockPrisma = {
   recipe: {
+    findMany: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
     findUnique: jest.fn(),
@@ -27,6 +28,42 @@ function buildApp() {
 describe('recipe write routes', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('returns summary fields for recipe list without ingredient splitting', async () => {
+    mockPrisma.recipe.findMany.mockResolvedValue([
+      {
+        id: 7,
+        title: 'Weeknight Pasta',
+        description: 'Fast and simple',
+        servings: 4,
+        cookTimeMinutes: 20,
+      },
+    ]);
+
+    const app = buildApp();
+    const res = await request(app).get('/api/recipes');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([
+      {
+        id: 7,
+        title: 'Weeknight Pasta',
+        description: 'Fast and simple',
+        servings: 4,
+        cookTimeMinutes: 20,
+      },
+    ]);
+    expect(mockPrisma.recipe.findMany).toHaveBeenCalledWith({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        servings: true,
+        cookTimeMinutes: true,
+      },
+    });
   });
 
   it('updates a recipe without a pre-read query', async () => {
