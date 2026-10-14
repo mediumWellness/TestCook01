@@ -4,6 +4,7 @@ import RecipeDetailPage from './pages/RecipeDetailPage';
 import NewRecipePage from './pages/NewRecipePage';
 import EditRecipePage from './pages/EditRecipePage';
 import MrTestyPage from './pages/MrTestyPage';
+import DQProPage from './pages/DQProPage';
 import './App.css';
 
 function App() {
@@ -28,6 +29,12 @@ function App() {
             >
               Mr Testy
             </NavLink>
+            <NavLink
+              to="/dq-pro"
+              className={({ isActive }) => `app-nav-link${isActive ? ' is-active' : ''}`}
+            >
+              DQ-Pro
+            </NavLink>
           </nav>
         </div>
       </header>
@@ -35,6 +42,7 @@ function App() {
         <Routes>
           <Route path="/" element={<RecipeListPage />} />
           <Route path="/mr-testy" element={<MrTestyPage />} />
+          <Route path="/dq-pro" element={<DQProPage />} />
           <Route path="/recipes/new" element={<NewRecipePage />} />
           <Route path="/recipes/:id" element={<RecipeDetailPage />} />
           <Route path="/recipes/:id/edit" element={<EditRecipePage />} />
