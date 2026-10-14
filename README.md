@@ -144,7 +144,7 @@ DQPro device payload shape:
 }
 ```
 
-DQPro fields:
+DQPro fields (request payload):
 - `deviceId` (string, required, unique): The unique identifier for the device
 - `name` (string, required): Display name for the device
 - `status` (string, optional, default: "active"): Current device status (e.g., "active", "inactive", "standby")
@@ -152,11 +152,13 @@ DQPro fields:
 - `memoryUsagePercent` (number, optional): Memory usage as a percentage (0-100)
 - `thermalStatus` (string, optional): Thermal status (e.g., "normal", "warning", "critical")
 - `powerUsageWatts` (number, optional): Current power consumption in watts
-- `lastOptimizationAt` (ISO 8601 datetime, optional): Timestamp of the last optimization
-- `optimizationCount` (integer, default: 0): Total number of optimizations performed
+
+DQPro fields (response only - set by server):
+- `lastOptimizationAt` (ISO 8601 datetime): Timestamp of the last profile update
+- `optimizationCount` (integer): Total number of profile records created
 
 ## Notes
-- This initial setup covers basic recipe CRUD only — no user accounts/auth yet.
+- This initial setup covers basic Recipe and DQPro CRUD operations — no user accounts/auth yet.
 - The client also includes a **Mr Testy** route for generating a reusable browser persona prompt focused on long-running game and chatbot playtesting.
 - Prisma schema lives at `server/prisma/schema.prisma`. After changing it, run `npm run prisma:migrate:dev` inside `server/` to create a development migration, then commit the new files under `server/prisma/migrations/`.
 - Recipe ingredient arrays are validated to reject: blank/empty entries, non-string elements, and entries containing newline or carriage-return characters. This prevents data corruption and ensures data integrity on retrieval.

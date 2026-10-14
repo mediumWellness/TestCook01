@@ -268,7 +268,7 @@ export default function DQProPage() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {savedProfiles.map((profile) => (
-                <div
+                <button
                   key={profile.id}
                   style={{
                     border: selectedProfile?.id === profile.id ? '2px solid #d4a574' : '1px solid #ccc',
@@ -277,13 +277,9 @@ export default function DQProPage() {
                     background: selectedProfile?.id === profile.id ? '#fff9e6' : '#fff',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
+                    textAlign: 'left',
                   }}
                   onClick={() => loadProfile(profile)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') loadProfile(profile);
-                  }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                     <div>
@@ -312,7 +308,7 @@ export default function DQProPage() {
                     Created: {new Date(profile.createdAt).toLocaleString()} |
                     Optimizations: {profile.optimizationCount}
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}

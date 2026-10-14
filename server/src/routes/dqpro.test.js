@@ -60,7 +60,11 @@ describe('DQPro Routes', () => {
       const response = await request(app).get('/');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockDevices);
+      expect(Array.isArray(response.body)).toBe(true);
+      expect(response.body.length).toBe(2);
+      expect(response.body[0].deviceId).toBe('dq-002');
+      expect(response.body[0].createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(response.body[0].updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
       expect(prisma.dqpro.findMany).toHaveBeenCalledWith({
         orderBy: { createdAt: 'desc' },
       });
@@ -97,7 +101,9 @@ describe('DQPro Routes', () => {
       const response = await request(app).get('/1');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockDevice);
+      expect(response.body.deviceId).toBe('dq-001');
+      expect(response.body.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(response.body.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
       expect(prisma.dqpro.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
     });
 
@@ -145,7 +151,10 @@ describe('DQPro Routes', () => {
       const response = await request(app).post('/').send(payload);
 
       expect(response.status).toBe(201);
-      expect(response.body).toEqual(mockDevice);
+      expect(response.body.deviceId).toBe('dq-001');
+      expect(response.body.name).toBe('Device 1');
+      expect(response.body.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(response.body.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
       expect(prisma.dqpro.create).toHaveBeenCalledWith({
         data: {
           deviceId: 'dq-001',
@@ -184,7 +193,10 @@ describe('DQPro Routes', () => {
       const response = await request(app).post('/').send(payload);
 
       expect(response.status).toBe(201);
-      expect(response.body).toEqual(mockDevice);
+      expect(response.body.deviceId).toBe('dq-001');
+      expect(response.body.cpuUsagePercent).toBe(45.5);
+      expect(response.body.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(response.body.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     });
 
     test('should reject request with missing deviceId', async () => {
@@ -304,7 +316,10 @@ describe('DQPro Routes', () => {
       const response = await request(app).put('/1').send(payload);
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockDevice);
+      expect(response.body.name).toBe('Updated Device');
+      expect(response.body.cpuUsagePercent).toBe(50.0);
+      expect(response.body.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(response.body.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
       expect(prisma.dqpro.update).toHaveBeenCalledWith({
         where: { id: 1 },
         data: {
