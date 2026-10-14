@@ -22,6 +22,12 @@ function toDQProResponse(dqpro) {
 
 function validateDQProInput(body, { partial = false } = {}) {
   const errors = [];
+
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    errors.push('Request body must be a JSON object');
+    return errors;
+  }
+
   const { deviceId, name, status, cpuUsagePercent, memoryUsagePercent, thermalStatus, powerUsageWatts } = body;
 
   if (!partial || deviceId !== undefined) {
@@ -36,7 +42,7 @@ function validateDQProInput(body, { partial = false } = {}) {
     }
   }
 
-  if (!partial || status !== undefined) {
+  if (status !== undefined) {
     if (typeof status !== 'string' || status.trim().length === 0) {
       errors.push('status must be a non-empty string');
     }
@@ -61,8 +67,8 @@ function validateDQProInput(body, { partial = false } = {}) {
   }
 
   if (powerUsageWatts !== undefined && powerUsageWatts !== null) {
-    if (typeof powerUsageWatts !== 'number' || powerUsageWatts < 0) {
-      errors.push('powerUsageWatts must be a non-negative number');
+    if (typeof powerUsageWatts !== 'number' || !isFinite(powerUsageWatts) || powerUsageWatts < 0) {
+      errors.push('powerUsageWatts must be a non-negative finite number');
     }
   }
 
