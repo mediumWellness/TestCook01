@@ -48,10 +48,12 @@ cd client
 npm install
 npm run dev               # starts app on http://localhost:5173
 ```
-The Vite dev server proxies `/api` requests to `http://localhost:4000`, so no CORS config is needed in development.
+The Vite dev server proxies `/api` requests to `http://localhost:4000`, so no CORS config is needed in development. It listens on all network interfaces so other devices on the same trusted network can connect.
 
 ### 4. Use the app
 Open http://localhost:5173 in your browser. You can create, view, edit, and delete recipes, or open the **Mr Testy** page to generate a browser testing persona brief for games and roleplay chatbots.
+
+To use the app from another device on the same network, find the computer's local IP address and open `http://<computer-ip>:5173` on that device (for example, `http://192.168.1.20:5173`). Allow the development server through the computer's firewall if prompted. This app has no user accounts, so keep access to a trusted network and do not expose the development server to the public internet.
 
 ## Usage
 
