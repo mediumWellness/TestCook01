@@ -51,7 +51,7 @@ npm run dev               # starts app on http://localhost:5173
 The Vite dev server proxies `/api` requests to `http://localhost:4000`, so no CORS config is needed in development.
 
 ### 4. Use the app
-Open http://localhost:5173 in your browser. You can create, view, edit, and delete recipes, or open the **Mr Testy** page to generate a browser testing persona brief for games and roleplay chatbots.
+Open http://localhost:5173 in your browser. You can create, view, edit, and delete recipes, open **Mr Testy** to generate a browser testing persona brief for games and roleplay chatbots, or open **DQ-Pro** to build a reusable device optimization profile.
 
 ## Usage
 
@@ -92,6 +92,8 @@ In the browser at http://localhost:5173 you should see the same recipe on the **
 | DELETE | `/api/recipes/:id`         | Delete a recipe                      |
 | GET    | `/api/models/test/venice`  | Test Venice.ai connection            |
 | GET    | `/api/models/test/ollama`  | Test Ollama connection               |
+
+The **DQ-Pro** page generates an optimization profile from the device model, operating environment, baseline measurements, goal, and constraints. It prompts assistants to verify device-specific details against manufacturer documentation and recommend measured, reversible changes.
 
 Recipe payload shape:
 ```json
