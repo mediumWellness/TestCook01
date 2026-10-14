@@ -90,6 +90,11 @@ In the browser at http://localhost:5173 you should see the same recipe on the **
 | POST   | `/api/recipes`             | Create a recipe                      |
 | PUT    | `/api/recipes/:id`         | Update a recipe                      |
 | DELETE | `/api/recipes/:id`         | Delete a recipe                      |
+| GET    | `/api/dqpro`               | List all DQPro devices               |
+| GET    | `/api/dqpro/:id`           | Get a single DQPro device            |
+| POST   | `/api/dqpro`               | Create a DQPro device                |
+| PUT    | `/api/dqpro/:id`           | Update a DQPro device                |
+| DELETE | `/api/dqpro/:id`           | Delete a DQPro device                |
 | GET    | `/api/models/test/venice`  | Test Venice.ai connection            |
 | GET    | `/api/models/test/ollama`  | Test Ollama connection               |
 
@@ -104,6 +109,30 @@ Recipe payload shape:
   "cookTimeMinutes": 20
 }
 ```
+
+DQPro device payload shape:
+```json
+{
+  "deviceId": "dq-pro-001",
+  "name": "DQ-Pro Device 1",
+  "status": "active",
+  "cpuUsagePercent": 45.5,
+  "memoryUsagePercent": 60.0,
+  "thermalStatus": "normal",
+  "powerUsageWatts": 150.0
+}
+```
+
+DQPro fields:
+- `deviceId` (string, required, unique): The unique identifier for the device
+- `name` (string, required): Display name for the device
+- `status` (string, optional, default: "active"): Current device status (e.g., "active", "inactive", "standby")
+- `cpuUsagePercent` (number, optional): CPU usage as a percentage (0-100)
+- `memoryUsagePercent` (number, optional): Memory usage as a percentage (0-100)
+- `thermalStatus` (string, optional): Thermal status (e.g., "normal", "warning", "critical")
+- `powerUsageWatts` (number, optional): Current power consumption in watts
+- `lastOptimizationAt` (ISO 8601 datetime, optional): Timestamp of the last optimization
+- `optimizationCount` (integer, default: 0): Total number of optimizations performed
 
 ## Notes
 - This initial setup covers basic recipe CRUD only — no user accounts/auth yet.
