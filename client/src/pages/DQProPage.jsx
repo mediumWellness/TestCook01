@@ -15,6 +15,7 @@ export default function DQProPage() {
   const [savedProfiles, setSavedProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -35,6 +36,7 @@ export default function DQProPage() {
 
   async function saveProfile(e) {
     e.preventDefault();
+    setSaving(true);
     try {
       setError('');
       setSuccess('');
@@ -54,25 +56,47 @@ export default function DQProPage() {
         powerUsageWatts: formData.powerUsageWatts ? parseFloat(formData.powerUsageWatts) : null,
       };
 
-      const res = await fetch('/api/dqpro', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      // If a profile is selected, use PUT to update; otherwise POST to create
+      if (selectedProfile) {
+        const res = await fetch(`/api/dqpro/${selectedProfile.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || err.errors?.[0] || 'Failed to save profile');
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || err.errors?.[0] || 'Failed to update profile');
+        }
+
+        const updated = await res.json();
+        setSavedProfiles(savedProfiles.map(p => p.id === updated.id ? updated : p));
+        setFormData(defaultFormState);
+        setSelectedProfile(null);
+        setSuccess('Profile updated successfully!');
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        const res = await fetch('/api/dqpro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || err.errors?.[0] || 'Failed to save profile');
+        }
+
+        const saved = await res.json();
+        setSavedProfiles([saved, ...savedProfiles]);
+        setFormData(defaultFormState);
+        setSuccess('Profile saved successfully!');
+        setTimeout(() => setSuccess(''), 3000);
       }
-
-      const saved = await res.json();
-      setSavedProfiles([saved, ...savedProfiles]);
-      setFormData(defaultFormState);
-      setSelectedProfile(null);
-      setSuccess('Profile saved successfully!');
-      setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -82,10 +106,10 @@ export default function DQProPage() {
       deviceId: profile.deviceId,
       name: profile.name,
       status: profile.status,
-      cpuUsagePercent: profile.cpuUsagePercent || '',
-      memoryUsagePercent: profile.memoryUsagePercent || '',
-      thermalStatus: profile.thermalStatus || '',
-      powerUsageWatts: profile.powerUsageWatts || '',
+      cpuUsagePercent: profile.cpuUsagePercent ?? '',
+      memoryUsagePercent: profile.memoryUsagePercent ?? '',
+      thermalStatus: profile.thermalStatus ?? '',
+      powerUsageWatts: profile.powerUsageWatts ?? '',
     });
     setError('');
     setSuccess('');
@@ -115,13 +139,13 @@ export default function DQProPage() {
           <h2>Optimization Profile Builder</h2>
 
           {error && (
-            <div style={{ color: '#c93a3a', fontWeight: 600, marginBottom: '1rem', padding: '0.5rem', background: '#ffe6e6', borderRadius: '4px' }}>
+            <div role="alert" style={{ color: '#c93a3a', fontWeight: 600, marginBottom: '1rem', padding: '0.5rem', background: '#ffe6e6', borderRadius: '4px' }}>
               {error}
             </div>
           )}
 
           {success && (
-            <div style={{ color: '#2a7d2a', fontWeight: 600, marginBottom: '1rem', padding: '0.5rem', background: '#e6ffe6', borderRadius: '4px' }}>
+            <div role="status" aria-live="polite" style={{ color: '#2a7d2a', fontWeight: 600, marginBottom: '1rem', padding: '0.5rem', background: '#e6ffe6', borderRadius: '4px' }}>
               {success}
             </div>
           )}
@@ -214,7 +238,9 @@ export default function DQProPage() {
           </label>
 
           <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-            <button type="submit">Save Profile</button>
+            <button type="submit" disabled={saving}>
+              {saving ? 'Saving...' : selectedProfile ? 'Update Profile' : 'Save Profile'}
+            </button>
             <button type="button" onClick={clearForm} style={{ background: '#999' }}>
               Clear
             </button>
@@ -266,8 +292,8 @@ export default function DQProPage() {
                       <span style={{ color: '#666', fontSize: '0.9rem' }}>Device ID: {profile.deviceId}</span>
                       <br />
                       <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#555' }}>
-                        <strong>Metrics:</strong> CPU {profile.cpuUsagePercent || '—'}% | Memory {profile.memoryUsagePercent || '—'}% |
-                        Thermal: {profile.thermalStatus || '—'} | Power: {profile.powerUsageWatts || '—'}W
+                        <strong>Metrics:</strong> CPU {profile.cpuUsagePercent ?? '—'}% | Memory {profile.memoryUsagePercent ?? '—'}% |
+                        Thermal: {profile.thermalStatus || '—'} | Power: {profile.powerUsageWatts ?? '—'}W
                       </div>
                     </div>
                     <span
