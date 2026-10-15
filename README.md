@@ -51,7 +51,28 @@ npm run dev               # starts app on http://localhost:5173
 The Vite dev server proxies `/api` requests to `http://localhost:4000`, so no CORS config is needed in development.
 
 ### 4. Use the app
-Open http://localhost:5173 in your browser. You can create, view, edit, and delete recipes, or open the **Mr Testy** page to generate a browser testing persona brief for games and roleplay chatbots.
+Open http://localhost:5173 in your browser. You can:
+- Create, view, edit, and delete recipes on the **Recipes** page
+- Open the **Mr Testy** page to generate a browser testing persona brief for games and roleplay chatbots
+- Use the **DQ-Pro** page to create and manage device optimization profiles
+
+## Frontend Usage
+
+### Recipes
+The **Recipes** page is the main interface. Use **+ New recipe** to add recipes, click on a recipe card to view details, or use the edit/delete buttons. Recipes are persisted to the backend API.
+
+### Mr Testy
+The **Mr Testy** page generates a detailed browser persona brief for playtesting games and chatbots. This persona includes age, appearance, personality, preferences, testing focus, and communication style to guide long-running interactions.
+
+### DQ-Pro Optimization
+The **DQ-Pro** page is a device optimization profile manager. Use it to:
+1. **Create profiles**: Fill in the device ID, name, and performance metrics (CPU %, memory %, thermal status, power usage)
+2. **Save profiles**: Click "Save Profile" to persist the profile to the backend API
+3. **Load profiles**: Click "Refresh Profiles" to fetch all saved profiles from the backend
+4. **View details**: Click on a saved profile to load it into the form and see full details including creation time and optimization count
+5. **Track metrics**: Monitor device performance metrics over time as optimization profiles are created
+
+Profiles are stored in the PostgreSQL database and retrieved via the `/api/dqpro` endpoint.
 
 ## Usage
 
@@ -90,6 +111,11 @@ In the browser at http://localhost:5173 you should see the same recipe on the **
 | POST   | `/api/recipes`             | Create a recipe                      |
 | PUT    | `/api/recipes/:id`         | Update a recipe                      |
 | DELETE | `/api/recipes/:id`         | Delete a recipe                      |
+| GET    | `/api/dqpro`               | List all DQPro devices               |
+| GET    | `/api/dqpro/:id`           | Get a single DQPro device            |
+| POST   | `/api/dqpro`               | Create a DQPro device                |
+| PUT    | `/api/dqpro/:id`           | Update a DQPro device                |
+| DELETE | `/api/dqpro/:id`           | Delete a DQPro device                |
 | GET    | `/api/models/test/venice`  | Test Venice.ai connection            |
 | GET    | `/api/models/test/ollama`  | Test Ollama connection               |
 
@@ -105,8 +131,34 @@ Recipe payload shape:
 }
 ```
 
+DQPro device payload shape:
+```json
+{
+  "deviceId": "dq-pro-001",
+  "name": "DQ-Pro Device 1",
+  "status": "active",
+  "cpuUsagePercent": 45.5,
+  "memoryUsagePercent": 60.0,
+  "thermalStatus": "normal",
+  "powerUsageWatts": 150.0
+}
+```
+
+DQPro fields (request payload):
+- `deviceId` (string, required, unique): The unique identifier for the device
+- `name` (string, required): Display name for the device
+- `status` (string, optional, default: "active"): Current device status (e.g., "active", "inactive", "standby")
+- `cpuUsagePercent` (number, optional): CPU usage as a percentage (0-100)
+- `memoryUsagePercent` (number, optional): Memory usage as a percentage (0-100)
+- `thermalStatus` (string, optional): Thermal status (e.g., "normal", "warning", "critical")
+- `powerUsageWatts` (number, optional): Current power consumption in watts
+
+DQPro fields (response only - set by server):
+- `lastOptimizationAt` (ISO 8601 datetime): Timestamp of the last profile update
+- `optimizationCount` (integer): Total number of profile records created
+
 ## Notes
-- This initial setup covers basic recipe CRUD only — no user accounts/auth yet.
+- This initial setup covers basic Recipe and DQPro CRUD operations — no user accounts/auth yet.
 - The client also includes a **Mr Testy** route for generating a reusable browser persona prompt focused on long-running game and chatbot playtesting.
 - Prisma schema lives at `server/prisma/schema.prisma`. After changing it, run `npm run prisma:migrate:dev` inside `server/` to create a development migration, then commit the new files under `server/prisma/migrations/`.
 - Recipe ingredient arrays are validated to reject: blank/empty entries, non-string elements, and entries containing newline or carriage-return characters. This prevents data corruption and ensures data integrity on retrieval.

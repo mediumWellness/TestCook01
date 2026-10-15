@@ -21,3 +21,18 @@ model Recipe {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+model DQPro {
+  id                  Int      @id @default(autoincrement())
+  deviceId            String   @unique
+  name                String
+  status              String   @default("active")
+  cpuUsagePercent     Float?
+  memoryUsagePercent  Float?
+  thermalStatus       String?
+  powerUsageWatts     Float?
+  lastOptimizationAt  DateTime?
+  optimizationCount   Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
