@@ -82,7 +82,7 @@ function isRecordNotFoundError(err) {
 // GET /api/dqpro
 router.get('/', async (req, res, next) => {
   try {
-    const devices = await prisma.dqpro.findMany({
+    const devices = await prisma.dQPro.findMany({
       orderBy: { createdAt: 'desc' },
     });
     res.json(devices.map(toDQProResponse));
@@ -98,7 +98,7 @@ router.get('/:id', async (req, res, next) => {
     if (!Number.isInteger(id)) {
       return res.status(400).json({ error: 'Invalid device id' });
     }
-    const device = await prisma.dqpro.findUnique({ where: { id } });
+    const device = await prisma.dQPro.findUnique({ where: { id } });
     if (!device) {
       return res.status(404).json({ error: 'Device not found' });
     }
@@ -116,7 +116,7 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ errors });
     }
     const { deviceId, name, status, cpuUsagePercent, memoryUsagePercent, thermalStatus, powerUsageWatts } = req.body;
-    const device = await prisma.dqpro.create({
+    const device = await prisma.dQPro.create({
       data: {
         deviceId: deviceId.trim(),
         name: name.trim(),
@@ -149,7 +149,7 @@ router.put('/:id', async (req, res, next) => {
     }
 
     const { deviceId, name, status, cpuUsagePercent, memoryUsagePercent, thermalStatus, powerUsageWatts } = req.body;
-    const device = await prisma.dqpro.update({
+    const device = await prisma.dQPro.update({
       where: { id },
       data: {
         ...(deviceId !== undefined && { deviceId: deviceId.trim() }),
@@ -180,7 +180,7 @@ router.delete('/:id', async (req, res, next) => {
     if (!Number.isInteger(id)) {
       return res.status(400).json({ error: 'Invalid device id' });
     }
-    await prisma.dqpro.delete({ where: { id } });
+    await prisma.dQPro.delete({ where: { id } });
     res.status(204).send();
   } catch (err) {
     if (isRecordNotFoundError(err)) {

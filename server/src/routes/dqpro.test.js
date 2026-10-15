@@ -4,7 +4,7 @@ const dqproRouter = require('./dqpro');
 const prisma = require('../prismaClient');
 
 jest.mock('../prismaClient', () => ({
-  dqpro: {
+  dQPro: {
     findMany: jest.fn(),
     findUnique: jest.fn(),
     create: jest.fn(),
@@ -55,7 +55,7 @@ describe('DQPro Routes', () => {
         },
       ];
 
-      prisma.dqpro.findMany.mockResolvedValue(mockDevices);
+      prisma.dQPro.findMany.mockResolvedValue(mockDevices);
 
       const response = await request(app).get('/');
 
@@ -65,13 +65,13 @@ describe('DQPro Routes', () => {
       expect(response.body[0].deviceId).toBe('dq-002');
       expect(response.body[0].createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
       expect(response.body[0].updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-      expect(prisma.dqpro.findMany).toHaveBeenCalledWith({
+      expect(prisma.dQPro.findMany).toHaveBeenCalledWith({
         orderBy: { createdAt: 'desc' },
       });
     });
 
     test('should handle database errors', async () => {
-      prisma.dqpro.findMany.mockRejectedValue(new Error('Database error'));
+      prisma.dQPro.findMany.mockRejectedValue(new Error('Database error'));
 
       const response = await request(app).get('/');
 
@@ -96,7 +96,7 @@ describe('DQPro Routes', () => {
         updatedAt: new Date('2026-10-14T11:00:00Z'),
       };
 
-      prisma.dqpro.findUnique.mockResolvedValue(mockDevice);
+      prisma.dQPro.findUnique.mockResolvedValue(mockDevice);
 
       const response = await request(app).get('/1');
 
@@ -104,11 +104,11 @@ describe('DQPro Routes', () => {
       expect(response.body.deviceId).toBe('dq-001');
       expect(response.body.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
       expect(response.body.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-      expect(prisma.dqpro.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(prisma.dQPro.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
     });
 
     test('should return 404 for non-existent device', async () => {
-      prisma.dqpro.findUnique.mockResolvedValue(null);
+      prisma.dQPro.findUnique.mockResolvedValue(null);
 
       const response = await request(app).get('/1');
 
@@ -121,7 +121,7 @@ describe('DQPro Routes', () => {
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({ error: 'Invalid device id' });
-      expect(prisma.dqpro.findUnique).not.toHaveBeenCalled();
+      expect(prisma.dQPro.findUnique).not.toHaveBeenCalled();
     });
   });
 
@@ -146,7 +146,7 @@ describe('DQPro Routes', () => {
         updatedAt: new Date('2026-10-14T11:00:00Z'),
       };
 
-      prisma.dqpro.create.mockResolvedValue(mockDevice);
+      prisma.dQPro.create.mockResolvedValue(mockDevice);
 
       const response = await request(app).post('/').send(payload);
 
@@ -155,7 +155,7 @@ describe('DQPro Routes', () => {
       expect(response.body.name).toBe('Device 1');
       expect(response.body.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
       expect(response.body.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-      expect(prisma.dqpro.create).toHaveBeenCalledWith({
+      expect(prisma.dQPro.create).toHaveBeenCalledWith({
         data: {
           deviceId: 'dq-001',
           name: 'Device 1',
@@ -188,7 +188,7 @@ describe('DQPro Routes', () => {
         updatedAt: new Date('2026-10-14T11:00:00Z'),
       };
 
-      prisma.dqpro.create.mockResolvedValue(mockDevice);
+      prisma.dQPro.create.mockResolvedValue(mockDevice);
 
       const response = await request(app).post('/').send(payload);
 
@@ -280,7 +280,7 @@ describe('DQPro Routes', () => {
 
       const err = new Error('Unique constraint failed');
       err.code = 'P2002';
-      prisma.dqpro.create.mockRejectedValue(err);
+      prisma.dQPro.create.mockRejectedValue(err);
 
       const response = await request(app).post('/').send(payload);
 
@@ -311,7 +311,7 @@ describe('DQPro Routes', () => {
         updatedAt: new Date('2026-10-14T12:00:00Z'),
       };
 
-      prisma.dqpro.update.mockResolvedValue(mockDevice);
+      prisma.dQPro.update.mockResolvedValue(mockDevice);
 
       const response = await request(app).put('/1').send(payload);
 
@@ -320,7 +320,7 @@ describe('DQPro Routes', () => {
       expect(response.body.cpuUsagePercent).toBe(50.0);
       expect(response.body.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
       expect(response.body.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-      expect(prisma.dqpro.update).toHaveBeenCalledWith({
+      expect(prisma.dQPro.update).toHaveBeenCalledWith({
         where: { id: 1 },
         data: {
           name: 'Updated Device',
@@ -334,7 +334,7 @@ describe('DQPro Routes', () => {
 
       const err = new Error('Record not found');
       err.code = 'P2025';
-      prisma.dqpro.update.mockRejectedValue(err);
+      prisma.dQPro.update.mockRejectedValue(err);
 
       const response = await request(app).put('/999').send(payload);
 
@@ -354,7 +354,7 @@ describe('DQPro Routes', () => {
 
       const err = new Error('Unique constraint failed');
       err.code = 'P2002';
-      prisma.dqpro.update.mockRejectedValue(err);
+      prisma.dQPro.update.mockRejectedValue(err);
 
       const response = await request(app).put('/1').send(payload);
 
@@ -374,19 +374,19 @@ describe('DQPro Routes', () => {
 
   describe('DELETE /:id', () => {
     test('should delete a device', async () => {
-      prisma.dqpro.delete.mockResolvedValue({});
+      prisma.dQPro.delete.mockResolvedValue({});
 
       const response = await request(app).delete('/1');
 
       expect(response.status).toBe(204);
       expect(response.text).toBe('');
-      expect(prisma.dqpro.delete).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(prisma.dQPro.delete).toHaveBeenCalledWith({ where: { id: 1 } });
     });
 
     test('should return 404 for non-existent device', async () => {
       const err = new Error('Record not found');
       err.code = 'P2025';
-      prisma.dqpro.delete.mockRejectedValue(err);
+      prisma.dQPro.delete.mockRejectedValue(err);
 
       const response = await request(app).delete('/999');
 
@@ -399,7 +399,7 @@ describe('DQPro Routes', () => {
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({ error: 'Invalid device id' });
-      expect(prisma.dqpro.delete).not.toHaveBeenCalled();
+      expect(prisma.dQPro.delete).not.toHaveBeenCalled();
     });
   });
 });
